@@ -10,7 +10,7 @@ from .utils import is_sequence
 
 user_role_table = db.Table('fp_user_role',
                            db.Column(
-                               'user_id', db.Integer, db.ForeignKey('fp_user.uid')),
+                               'user_id', db.Integer, db.ForeignKey('fp_user.id')),
                            db.Column(
                            'role_id', db.Integer, db.ForeignKey('fp_role.id'))
                            )
