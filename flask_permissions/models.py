@@ -97,14 +97,6 @@ class UserMixin(db.Model):
                 db.session.commit()
             self.roles = [r]
 
-        self.set_password(password)
-
-    def set_password(self, password):
-        self.pwdhash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.pwdhash, password)
-
     def is_authenticated(self):
         return True
 
