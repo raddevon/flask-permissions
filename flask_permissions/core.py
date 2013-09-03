@@ -49,5 +49,3 @@ class Permissions(object):
                     return "You do not have access"
             return inner
         return wrapper
-
-import models
