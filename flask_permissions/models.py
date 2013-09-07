@@ -89,13 +89,15 @@ class UserMixin(db.Model):
             self.roles = role_list
         # Otherwise, assign the default 'user' role. Create that role if it
         # doesn't exist.
-        else:
+        elif default_role:
             r = Role.query.filter_by(name=default_role).first()
             if not r:
                 r = Role(default_role)
                 db.session.add(r)
                 db.session.commit()
             self.roles = [r]
+        else:
+            self.roles = []
 
     def is_authenticated(self):
         return True
