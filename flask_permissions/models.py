@@ -23,7 +23,7 @@ role_ability_table = db.Table('fp_role_ability',
                               )
 
 
-class RoleMixin(db.Model):
+class Role(db.Model):
 
     """
     Subclass this for your roles
@@ -32,7 +32,7 @@ class RoleMixin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True)
     abilities = db.relationship(
-        'AbilityMixin', secondary=role_ability_table, backref='roles')
+        'Ability', secondary=role_ability_table, backref='roles')
 
     def __init__(self, name):
         self.name = name.lower()
@@ -44,7 +44,7 @@ class RoleMixin(db.Model):
         return self.name
 
 
-class AbilityMixin(db.Model):
+class Ability(db.Model):
 
     """
     Subclass this for your abilities
@@ -71,7 +71,7 @@ class UserMixin(db.Model):
     __tablename__ = 'fp_user'
     id = db.Column(db.Integer, primary_key=True)
     roles = db.relationship(
-        'RoleMixin', secondary=user_role_table, backref='users')
+        'Role', secondary=user_role_table, backref='users')
 
     def __init__(self, roles=None, default_role='user'):
         # If only a string is passed for roles, convert it to a list containing
