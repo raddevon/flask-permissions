@@ -18,6 +18,7 @@ class Permissions(object):
         def wrapper(func):
             @wraps(func)
             def inner(*args, **kwargs):
+                from .models import Role
                 attribute_object = Role.query.filter_by(name=attribute).first()
                 user_abilities = []
                 for role in current_user.roles:
@@ -38,6 +39,7 @@ class Permissions(object):
         def wrapper(func):
             @wraps(func)
             def inner(*args, **kwargs):
+                from .models import Ability
                 attribute_object = Ability.query.filter_by(
                     name=attribute).first()
                 user_abilities = []
