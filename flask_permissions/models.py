@@ -112,7 +112,7 @@ class UserMixin(db.Model):
         for role in roles:
             existing_role = Role.query.filter_by(name=role).first()
             if not existing_role:
-                existing_role = Role(default_role)
+                existing_role = Role(role)
                 db.session.add(r)
                 db.session.commit()
             self.roles.append(existing_role)
