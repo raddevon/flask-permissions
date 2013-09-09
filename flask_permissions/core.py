@@ -1,3 +1,5 @@
+from functools import wraps
+
 
 class Permissions(object):
 
