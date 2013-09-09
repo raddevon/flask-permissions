@@ -116,16 +116,12 @@ class UserMixin(db.Model):
                 db.session.add(r)
                 db.session.commit()
             self.roles.append(existing_role)
-            db.session.add(self)
-            db.session.commit()
 
     def remove_roles(*roles):
         for role in roles:
             existing_role = Role.query.filter_by(name=role).first()
             if existing_role and existing_role in self.roles:
                 self.roles.remove(existing_role)
-                db.session.add(self)
-                db.session.commit()
 
     def get_id(self):
         return unicode(self.id)
