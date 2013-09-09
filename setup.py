@@ -16,10 +16,7 @@ setup(
     author_email='devon@raddevon.com',
     description='Simple user permissions for Flask',
     long_description=__doc__,
-    py_modules=['flask_permissions'],
-    # if you would be using a package instead use packages instead
-    # of py_modules:
-    # packages=['flask_sqlite3'],
+    packages=['flask_permissions'],
     zip_safe=False,
     include_package_data=True,
     platforms='any',
