@@ -11,7 +11,7 @@ class Permissions(object):
         global db
         db = local_db
 
-    def user_has(attribute):
+    def user_has(self, attribute):
         """
         Takes an attribute (a string name of either a role or an ability) and returns the function if the user has that attribute
         """
@@ -31,7 +31,7 @@ class Permissions(object):
             return inner
         return wrapper
 
-    def user_is(attribute):
+    def user_is(self, attribute):
         """
         Takes an attribute (a string name of either a role or an ability) and returns the function if the user has that attribute
         """
