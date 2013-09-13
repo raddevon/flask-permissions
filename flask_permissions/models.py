@@ -124,7 +124,7 @@ class UserMixin(db.Model):
     def is_anonymous(self):
         return False
 
-    def add_roles(*roles):
+    def add_roles(self, *roles):
         for role in roles:
             existing_role = Role.query.filter_by(name=role).first()
             if not existing_role:
@@ -133,7 +133,7 @@ class UserMixin(db.Model):
                 db.session.commit()
             self.roles.append(existing_role)
 
-    def remove_roles(*roles):
+    def remove_roles(self, *roles):
         for role in roles:
             existing_role = Role.query.filter_by(name=role).first()
             if existing_role and existing_role in self.roles:
