@@ -9,7 +9,7 @@ from setuptools import setup
 
 setup(
     name='Flask-Permissions',
-    version='0.1.1',
+    version='0.1.5',
     url='http://example.com/flask-sqlite3/',
     license='BSD',
     author='Devon Campbell',
