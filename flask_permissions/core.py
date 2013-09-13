@@ -3,11 +3,12 @@ from functools import wraps
 
 class Permissions(object):
 
-    def __init__(self, app, local_db):
-        self.init_app(app, local_db)
+    def __init__(self, app, local_db, current_user):
+        self.init_app(app, local_db, current_user)
 
-    def init_app(self, app, local_db):
+    def init_app(self, app, local_db, current_user):
         self.app = app
+        self.current_user = current_user
         global db
         db = local_db
 
@@ -21,7 +22,7 @@ class Permissions(object):
                 from .models import Role
                 attribute_object = Role.query.filter_by(name=attribute).first()
                 user_abilities = []
-                for role in current_user.roles:
+                for role in self.current_user.roles:
                     user_abilities += [
                         role.ability for ability in role.abilities]
                 if attribute_object in current_user.roles or attribute_object in user_abilities:
@@ -43,10 +44,9 @@ class Permissions(object):
                 attribute_object = Ability.query.filter_by(
                     name=attribute).first()
                 user_abilities = []
-                for role in current_user.roles:
                     user_abilities += [
                         role.ability for ability in role.abilities]
-                if attribute_object in current_user.roles or attribute_object in user_abilities:
+                if desired_role in self.current_user.roles:
                     return func(*args, **kwargs)
                 else:
                     # Make this do someting way better.
