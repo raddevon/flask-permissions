@@ -1,6 +1,3 @@
-from functools import wraps
-
-
 class Permissions(object):
 
     def __init__(self, app, local_db, current_user):

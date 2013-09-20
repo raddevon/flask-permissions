@@ -1,4 +1,7 @@
-def user_has(attribute, user=None):
+from functools import wraps
+
+
+def user_has(ability, user=None):
     """
     Takes an attribute (a string name of either a role or an ability) and returns the function if the user has that attribute
     """
