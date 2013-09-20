@@ -1,5 +1,6 @@
 from flask import Flask
 from flask.ext.testing import TestCase
+from flask.ext.sqlalchemy import SQLAlchemy
 from .core import Permissions
 from .models import Role, Ability, UserMixin
 
