@@ -1,3 +1,4 @@
+from flask import Flask
 from flask.ext.testing import TestCase
 from .core import Permissions
 from .models import Role, Ability, UserMixin
