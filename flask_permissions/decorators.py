@@ -12,7 +12,13 @@ def user_has(ability, user=None):
             desired_ability = Ability.query.filter_by(
                 name=ability).first()
             user_abilities = []
-            for role in self.current_user.roles:
+            if not user:
+                try:
+                    from flast.ext.login import current_user as user
+                except ImportError:
+                    raise ImportError(
+                        'User argument not passed and Flask-Login current_user could not be imported.')
+            for role in user.roles:
                 user_abilities += [
                     role.ability for a in role.abilities]
             if desired_ability in user_abilities:
@@ -33,8 +39,14 @@ def user_is(role, user=None):
         def inner(*args, **kwargs):
             from .models import Role
             desired_role = Role.query.filter_by(
-                name=attribute).first()
-            if desired_role in self.current_user.roles:
+                name=role).first()
+            if not user:
+                try:
+                    from flast.ext.login import current_user as user
+                except ImportError:
+                    raise ImportError(
+                        'User argument not passed and Flask-Login current_user could not be imported.')
+            if desired_role in user.roles:
                 return func(*args, **kwargs)
             else:
                 # Make this do someting way better.
