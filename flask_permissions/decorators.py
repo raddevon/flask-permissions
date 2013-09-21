@@ -1,16 +1,13 @@
 from functools import wraps
 
 
-def import_user(user):
-    if user:
-        return user
-    else:
-        try:
-            from flask.ext.login import current_user
-            return current_user
-        except ImportError:
-            raise ImportError(
-                'User argument not passed and Flask-Login current_user could not be imported.')
+def import_user():
+    try:
+        from flask.ext.login import current_user
+        return current_user
+    except ImportError:
+        raise ImportError(
+            'User argument not passed and Flask-Login current_user could not be imported.')
 
 
 def user_has(ability, user=None):
@@ -24,7 +21,7 @@ def user_has(ability, user=None):
             desired_ability = Ability.query.filter_by(
                 name=ability).first()
             user_abilities = []
-            current_user = import_user(user)
+            current_user = user or import_user()
             for role in current_user.roles:
                 user_abilities += [
                     role.ability for a in role.abilities]
@@ -47,7 +44,7 @@ def user_is(role, user=None):
             from .models import Role
             desired_role = Role.query.filter_by(
                 name=role).first()
-            current_user = import_user(user)
+            current_user = user or import_user()
             if desired_role in current_user.roles:
                 return func(*args, **kwargs)
             else:
