@@ -22,9 +22,12 @@ def user_has(ability, user=None):
                 name=ability).first()
             user_abilities = []
             current_user = user or import_user()
-            for role in current_user.roles:
-                user_abilities += [
-                    role.ability for a in role.abilities]
+            try:
+                for role in current_user.roles:
+                    user_abilities += [
+                        role.ability for a in role.abilities]
+            except AttributeError:
+                pass
             if desired_ability in user_abilities:
                 return func(*args, **kwargs)
             else:
@@ -45,10 +48,12 @@ def user_is(role, user=None):
             desired_role = Role.query.filter_by(
                 name=role).first()
             current_user = user or import_user()
-            if desired_role in current_user.roles:
-                return func(*args, **kwargs)
-            else:
-                # Make this do someting way better.
-                return "You do not have access"
+            try:
+                if desired_role in current_user.roles:
+                    return func(*args, **kwargs)
+            except AttributeError:
+                pass
+            # Make this do someting way better.
+            return "You do not have access"
         return inner
     return wrapper
