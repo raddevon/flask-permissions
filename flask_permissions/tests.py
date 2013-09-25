@@ -1,7 +1,9 @@
 from flask import Flask
+import unittest
 from flask.ext.testing import TestCase
 from flask.ext.sqlalchemy import SQLAlchemy
 from .core import Permissions
+from .utils import is_sequence
 import os
 
 app = Flask(__name__)
@@ -57,3 +59,33 @@ class ModelsTests(TestCase):
         roles = [role.name for role in test_user.roles]
         self.assertEqual(set(new_roles), set(roles))
 
+
+class UtilsTests(unittest.TestCase):
+
+    def test_is_string_a_sequence(self):
+        string_var = "This is a string. It is not a sequence."
+        self.assertFalse(is_sequence(string_var))
+
+    def test_is_integer_a_sequence(self):
+        int_var = 1
+        self.assertFalse(is_sequence(int_var))
+
+    def test_is_bool_a_sequence(self):
+        bool_var = True
+        self.assertFalse(is_sequence(bool_var))
+
+    def test_is_list_a_sequence(self):
+        list_var = [1, 2, 3]
+        self.assertTrue(is_sequence(list_var))
+
+    def test_is_set_a_sequence(self):
+        set_var = set([1, 2, 3])
+        self.assertTrue(is_sequence(set_var))
+
+    def test_is_tuple_a_sequence(self):
+        tuple_var = (1, 2, 3)
+        self.assertTrue(is_sequence(tuple_var))
+
+    def test_is_dict_a_sequence(self):
+        dict_var = {'a': 1, 'b': 2, 'c': 3}
+        self.assertTrue(is_sequence(dict_var))
