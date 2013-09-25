@@ -1,5 +1,6 @@
 Flask==0.10.1
 Flask-Testing==0.4
+Flask-SQLAlchemy==1.0
 Werkzeug==0.9.4
 twill==0.9
 wsgiref==0.1.2
