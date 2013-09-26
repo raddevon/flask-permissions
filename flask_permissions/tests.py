@@ -55,7 +55,7 @@ class ModelsTests(TestCase):
         self.assertEqual(role.id, 1)
 
     def test_ability(self):
-        ability = Ability('add users')
+        ability = Ability('create_users')
         db.session.add(ability)
         db.session.commit()
         self.assertEqual(ability.id, 1)
