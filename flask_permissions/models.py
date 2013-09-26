@@ -37,7 +37,7 @@ class Role(db.Model):
     def __init__(self, name):
         self.name = name.lower()
 
-    def add_abilities(*abilities):
+    def add_abilities(self, *abilities):
         for ability in abilities:
             existing_ability = Ability.query.filter_by(
                 name=ability).first()
@@ -47,7 +47,7 @@ class Role(db.Model):
                 db.session.commit()
             self.abilities.append(existing_ability)
 
-    def remove_abilities(*abilities):
+    def remove_abilities(self, *abilities):
         for ability in abilities:
             existing_ability = Role.query.filter_by(name=ability).first()
             if existing_ability and existing_ability in self.abilities:
