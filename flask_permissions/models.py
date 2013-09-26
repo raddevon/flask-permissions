@@ -49,7 +49,7 @@ class Role(db.Model):
 
     def remove_abilities(self, *abilities):
         for ability in abilities:
-            existing_ability = Role.query.filter_by(name=ability).first()
+            existing_ability = Ability.query.filter_by(name=ability).first()
             if existing_ability and existing_ability in self.abilities:
                 self.abilities.remove(existing_ability)
 
