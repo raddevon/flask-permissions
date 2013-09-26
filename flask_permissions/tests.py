@@ -96,7 +96,45 @@ class ModelsTests(TestCase):
         db.session.commit()
         test_user = UserMixin.query.get(1)
         roles = [role.name for role in test_user.roles]
-        self.assertEqual(set(new_roles), set(roles))
+        self.assertEqual(set(roles), set(['superadmin']))
+
+    def test_add_abilities_with_nonexisting_abilities(self):
+        role = Role('admin')
+        new_abilities = ['create_users', 'set_roles', 'set_abilities']
+        role.add_abilities(*new_abilities)
+        db.session.add(role)
+        db.session.commit()
+        test_role = Role.query.get(1)
+        abilities = [ability.name for ability in test_role.abilities]
+        self.assertEqual(set(new_abilities), set(abilities))
+
+    def test_add_abilities_with_existing_abilities(self):
+        role = Role('admin')
+        new_abilities = ['create_users', 'set_roles', 'set_abilities']
+        for ability in new_abilities:
+            new_ability = Ability(ability)
+            db.session.add(new_ability)
+            db.session.commit()
+        role.add_abilities(*new_abilities)
+        db.session.add(role)
+        db.session.commit()
+        test_role = Role.query.get(1)
+        abilities = [ability.name for ability in test_role.abilities]
+        self.assertEqual(set(new_abilities), set(abilities))
+
+    def test_remove_abilities(self):
+        role = Role('admin')
+        new_abilities = ['create_users', 'set_roles', 'set_abilities']
+        role.add_abilities(*new_abilities)
+        db.session.add(role)
+        db.session.commit()
+        ability_remove_role = Role.query.get(1)
+        ability_remove_role.remove_abilities('set_roles', 'set_abilities')
+        db.session.add(ability_remove_role)
+        db.session.commit()
+        test_role = Role.query.get(1)
+        abilities = [ability.name for ability in test_role.abilities]
+        self.assertEqual(set(abilities), set(['create_users']))
 
 
 class UtilsTests(unittest.TestCase):
