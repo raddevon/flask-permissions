@@ -9,7 +9,7 @@ from setuptools import setup
 
 setup(
     name='Flask-Permissions',
-    version='0.1.16',
+    version='0.1.17',
     url='http://example.com/flask-sqlite3/',
     license='BSD',
     author='Devon Campbell',
@@ -21,7 +21,8 @@ setup(
     include_package_data=True,
     platforms='any',
     install_requires=[
-        'Flask'
+        'Flask',
+        'Flask-SQLAlchemy'
     ],
     classifiers=[
         'Environment :: Web Environment',
