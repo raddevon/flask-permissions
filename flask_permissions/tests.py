@@ -60,10 +60,38 @@ class ModelsTests(TestCase):
         db.session.commit()
         self.assertEqual(ability.id, 1)
 
-    def test_add_role(self):
+    def test_add_roles_with_nonexisting_roles(self):
+        user = UserMixin(default_role=None)
+        new_roles = ['admin', 'superadmin', 'editor']
+        user.add_roles(*new_roles)
+        db.session.add(user)
+        db.session.commit()
+        test_user = UserMixin.query.get(1)
+        roles = [role.name for role in test_user.roles]
+        self.assertEqual(set(new_roles), set(roles))
+
+    def test_add_roles_with_existing_roles(self):
+        user = UserMixin(default_role=None)
+        new_roles = ['admin', 'superadmin', 'editor']
+        for role in new_roles:
+            new_role = Role(role)
+            db.session.add(new_role)
+            db.session.commit()
+        user.add_roles(*new_roles)
+        db.session.add(user)
+        db.session.commit()
+        test_user = UserMixin.query.get(1)
+        roles = [role.name for role in test_user.roles]
+        self.assertEqual(set(new_roles), set(roles))
+
+    def test_remove_roles(self):
         user = UserMixin()
         new_roles = ['admin', 'user', 'superadmin']
         user.add_roles(*new_roles)
+        db.session.add(user)
+        db.session.commit()
+        role_remove_user = UserMixin.query.get(1)
+        role_remove_user.remove_roles('user', 'admin')
         db.session.add(user)
         db.session.commit()
         test_user = UserMixin.query.get(1)
