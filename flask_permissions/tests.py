@@ -48,17 +48,57 @@ class ModelsTests(TestCase):
         db.session.commit()
         self.assertEqual(user.id, 1)
 
+    def test_user_is_authenticated(self):
+        user = UserMixin()
+        self.assertTrue(user.is_authenticated())
+
+    def test_user_is_active(self):
+        user = UserMixin()
+        self.assertTrue(user.is_active())
+
+    def test_user_is_not_anonymous(self):
+        user = UserMixin()
+        self.assertFalse(user.is_anonymous())
+
+    def test_user_get_id(self):
+        user = UserMixin()
+        db.session.add(user)
+        db.session.commit()
+        self.assertEqual(user.get_id(), unicode(1))
+
+    def test_user_repr(self):
+        user = UserMixin()
+        db.session.add(user)
+        db.session.commit()
+        self.assertEqual(user.__repr__(), '<User 1>')
+
     def test_role(self):
         role = Role('admin')
         db.session.add(role)
         db.session.commit()
         self.assertEqual(role.id, 1)
 
+    def test_role_repr(self):
+        role = Role('admin')
+        self.assertEqual(role.__repr__(), '<Role admin>')
+
+    def test_role_str(self):
+        role = Role('admin')
+        self.assertEqual(role.__str__(), 'admin')
+
     def test_ability(self):
         ability = Ability('create_users')
         db.session.add(ability)
         db.session.commit()
         self.assertEqual(ability.id, 1)
+
+    def test_ability_repr(self):
+        ability = Ability('create_users')
+        self.assertEqual(ability.__repr__(), '<Ability create_users>')
+
+    def test_ability_repr(self):
+        ability = Ability('create_users')
+        self.assertEqual(ability.__str__(), 'create_users')
 
     def test_add_roles_with_nonexisting_roles(self):
         user = UserMixin(default_role=None)
@@ -140,7 +180,7 @@ class ModelsTests(TestCase):
 class UtilsTests(unittest.TestCase):
 
     def test_is_string_a_sequence(self):
-        string_var = "This is a string. It is not a sequence."
+        string_var = 'This is a string. It is not a sequence.'
         self.assertFalse(is_sequence(string_var))
 
     def test_is_integer_a_sequence(self):
