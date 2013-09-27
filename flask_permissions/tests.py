@@ -48,6 +48,15 @@ class ModelsTests(TestCase):
         db.session.commit()
         self.assertEqual(user.id, 1)
 
+    def test_new_user_with_a_single_role_assigned(self):
+        new_role = Role('admin')
+        db.session.add(new_role)
+        db.session.commit()
+        user = UserMixin(roles='admin', default_role=None)
+        db.session.add(user)
+        db.session.commit()
+        self.assertEqual(user.id, 1)
+
     def test_user_is_authenticated(self):
         user = UserMixin()
         self.assertTrue(user.is_authenticated())
