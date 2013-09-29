@@ -4,6 +4,12 @@
 
 Flask-Permissions is a simple Flask permissions extension that works with [Flask-SQLAlchemy](https://github.com/mitsuhiko/flask-sqlalchemy). It also plays nicely with [Flask-Login](https://github.com/maxcountryman/flask-login) although that isn't a strict requirement.
 
+## Installation
+
+Installs quickly and easily using PIP:
+
+    pip install Flask-Permissions
+
 ## Getting Started
 
 First, you'll want to import Permissions and initialize the Permissions object passing in your app, database, and the current user.
