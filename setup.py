@@ -1,8 +1,5 @@
 """
-Flask-Permissions
--------------
-
-Simple user permissions for Flask
+A simple permissions system for developers using Flask and SQLAlchemy.
 """
 from setuptools import setup
 
