@@ -6,9 +6,9 @@ from setuptools import setup
 
 setup(
     name='Flask-Permissions',
-    version='0.1.17',
-    url='http://example.com/flask-sqlite3/',
-    license='BSD',
+    version='0.1.19',
+    url='https://github.com/raddevon/flask-permissions',
+    license='MIT',
     author='Devon Campbell',
     author_email='devon@raddevon.com',
     description='Simple user permissions for Flask',
@@ -22,9 +22,11 @@ setup(
         'Flask-SQLAlchemy'
     ],
     classifiers=[
+        'Framework :: Flask',
+        'Natural Language :: English',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
