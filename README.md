@@ -12,7 +12,55 @@ Installs quickly and easily using PIP:
 
 ## Getting Started
 
-First, you'll want to import Permissions and initialize the Permissions object passing in your app, database, and the current user.
+1. Import Flask, Flask-SQLAlchemy, and, if you want, Flask-Login.
+
+        from flask import Flask
+        from flask.ext.login import LoginManager, current_user
+        from flask.ext.sqlalchemy import SQLAlchemy
+
+2. Import the `Permissions` object.
+
+        from flask.ext.permissions.core import Permissions
+
+3. Instantiate the `Permissions` object passing in your Flask app, SQLAlchemy database, and a proxy for the current user.
+
+        perms = Permissions(app, db, current_user)
+
+4. Sub-class the Flask-Permissions UserMixin. Call the UserMixin's `__init__` in your own `__init__`.
+
+        from app import db
+        from flask.ext.permissions.models import UserMixin
+
+
+        class User(UserMixin):
+            # Add whatever fields you need for your user class here.
+
+            def __init__(self, email, password, roles=None):
+                UserMixin.__init__(self, roles)
+
+5. Put those decorators to work! Decorate any of your views with the `user_is` or `user_has` decorators from `flask.ext.permissions.decorators` to limit access.
+
+        from flask.ext.permissions.decorators import user_is, user_has
+
+    `@user_is` decorator:
+
+        @app.route('/admin', methods=['GET', 'POST'])
+        @user_is('admin')
+        def admin():
+            return render_template('admin.html')
+
+    `@user_has` decorator:
+
+        @app.route('/delete-users', methods=['GET', 'POST'])
+        @user_has('delete_user')
+        def delete_users():
+            return render_template('delete-users.html')
+
+## Example Implementation
+
+This is ripped almost directly from a project I'm working on that implements Flask-Permissions. Be sure to check out the code comments for help with what does what.
+
+#### __init__.py
 
     # Import Flask, Flask-SQLAlchemy, and maybe Flask-Login
     from flask import Flask
@@ -41,7 +89,7 @@ First, you'll want to import Permissions and initialize the Permissions object p
     # but you don't have to do so.
     perms = Permissions(app, db, current_user)
 
-Next, you should create a user class. The user class should sub-class Flask-Permissions' UserMixin. Here's a example of how you might do that:
+#### models.py
 
     # Import your database
     from app import db
@@ -73,7 +121,7 @@ Next, you should create a user class. The user class should sub-class Flask-Perm
         def __str__(self):
             return self.email
 
-The last step is to put the Flask-Permissions decorators to work. These are how you'll limit access to your views.
+#### views.py
 
     # Import the decorators
     from flask.ext.permissions.decorators import user_is, user_has
