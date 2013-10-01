@@ -60,7 +60,7 @@ Installs quickly and easily using PIP:
 
 This is ripped almost directly from a project I'm working on that implements Flask-Permissions. Be sure to check out the code comments for help with what does what.
 
-#### __init__.py
+#### \__init__.py
 
     # Import Flask, Flask-SQLAlchemy, and maybe Flask-Login
     from flask import Flask
