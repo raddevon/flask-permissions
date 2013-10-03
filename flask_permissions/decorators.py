@@ -2,6 +2,12 @@ from functools import wraps
 
 
 def import_user():
+    """
+    Attempts to import the Flask-Login current_user proxy
+
+    Returns:
+        The Flask-Login current_user proxy.
+    """
     try:
         from flask.ext.login import current_user
         return current_user
@@ -12,7 +18,13 @@ def import_user():
 
 def user_has(ability, user=None):
     """
-    Takes an ability (a string name of either a role or an ability) and returns the function if the user has that ability
+    Prevents access to a route unless the user has the given ability.
+
+    Args:
+        ability: The string name of the ability to test.
+        user: (Optional) The user object to test for the given ability. If omitted, the function will attempt to import the Flask-Login current_user.
+    Returns:
+        The decorated function.
     """
     def wrapper(func):
         @wraps(func)
@@ -38,8 +50,14 @@ def user_has(ability, user=None):
 
 def user_is(role, user=None):
     """
-    Takes an role (a string name of either a role or an ability) and returns the function if the user has that role
-    """
+        Prevents access to a route unless the user has the given role.
+
+        Args:
+            role: The string name of the role to test.
+            user: (Optional) The user object to test for the given role. If omitted, the function will attempt to import the Flask-Login current_user.
+        Returns:
+            The decorated function.
+        """
     def wrapper(func):
         @wraps(func)
         def inner(*args, **kwargs):

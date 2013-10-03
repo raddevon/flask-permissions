@@ -26,7 +26,14 @@ role_ability_table = db.Table('fp_role_ability',
 class Role(db.Model):
 
     """
-    Subclass this for your roles
+    Class for user roles
+
+    This very basic roles class may be subclassed if you need it to store additional information.
+
+    Attributes:
+        id: An integer primary key for database
+        name: A string naming the role
+        abilities: A relationship linking to the Ability object
     """
     __tablename__ = 'fp_role'
     id = db.Column(db.Integer, primary_key=True)
@@ -38,6 +45,12 @@ class Role(db.Model):
         self.name = name.lower()
 
     def add_abilities(self, *abilities):
+        """
+        Adds relationships to existing or new abilities to the Role object.
+
+        Args:
+            *abilities: A variable number of string ability names to be associated with the Role object.
+        """
         for ability in abilities:
             existing_ability = Ability.query.filter_by(
                 name=ability).first()
@@ -48,6 +61,12 @@ class Role(db.Model):
             self.abilities.append(existing_ability)
 
     def remove_abilities(self, *abilities):
+        """
+        Removes relationships to abilities from the Role object.
+
+        Args:
+            *abilities: A variable number of string ability names to be removed from the Role object.
+        """
         for ability in abilities:
             existing_ability = Ability.query.filter_by(name=ability).first()
             if existing_ability and existing_ability in self.abilities:
@@ -63,7 +82,13 @@ class Role(db.Model):
 class Ability(db.Model):
 
     """
-    Subclass this for your abilities
+    Class for role abilities
+
+    This very basic abilities class may be subclassed if you need it to store additional information.
+
+    Attributes:
+        id: An integer primary key for database
+        name: A string naming the ability
     """
     __tablename__ = 'fp_ability'
     id = db.Column(db.Integer, primary_key=True)
@@ -82,7 +107,13 @@ class Ability(db.Model):
 class UserMixin(db.Model):
 
     """
-    Subclass this for your user class
+    Mixin for the user class
+
+    Sub-class your user object from this class. You may want to add information the user will utilize to login such as a username, email address, and password.
+
+    Attributes:
+        id: An integer primary key for database
+        roles: A relationship linking to the Ability object
     """
     __tablename__ = 'fp_user'
     id = db.Column(db.Integer, primary_key=True)
@@ -90,6 +121,13 @@ class UserMixin(db.Model):
         'Role', secondary=user_role_table, backref='users')
 
     def __init__(self, roles=None, default_role='user'):
+        """
+        Sets up the new user with a defaul_role if specified or with the role 'user' if not specified.
+
+        Args:
+            roles: (Optional) A list of string role names to assign to the new user.
+            default_role: (Optional) Used primarily for sub-classes. This role is assigned to all new users with no roles specified. Default value: 'user'
+        """
         # If only a string is passed for roles, convert it to a list containing
         # that string
         if roles and isinstance(roles, basestring):
@@ -125,6 +163,12 @@ class UserMixin(db.Model):
         return False
 
     def add_roles(self, *roles):
+        """
+        Adds relationships to existing or new roles to the user object.
+
+        Args:
+            *roles: A variable number of string role names to be associated with the user object.
+        """
         for role in roles:
             existing_role = Role.query.filter_by(name=role).first()
             if not existing_role:
@@ -134,6 +178,12 @@ class UserMixin(db.Model):
             self.roles.append(existing_role)
 
     def remove_roles(self, *roles):
+        """
+        Removes relationships to roles from the user object.
+
+        Args:
+            *roles: A variable number of string role names to be removed from the user object.
+        """
         for role in roles:
             existing_role = Role.query.filter_by(name=role).first()
             if existing_role and existing_role in self.roles:
