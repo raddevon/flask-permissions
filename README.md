@@ -76,7 +76,7 @@ Installs quickly and easily using PIP:
     `@user_has` decorator:
 
         @app.route('/delete-users', methods=['GET', 'POST'])
-        @user_has('delete_user')
+        @user_has('delete_users')
         def delete_users():
             return render_template('delete-users.html')
 
@@ -160,7 +160,7 @@ This is ripped almost directly from a project I'm working on that implements Fla
     # Here's an example of user_has
     @app.route('/delete-users', methods=['GET', 'POST'])
     # Pass the name of the ability you want to test for to the decorator
-    @user_has('delete_user')
+    @user_has('delete_users')
     def delete_users():
         return render_template('delete-users.html')
 
