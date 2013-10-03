@@ -38,7 +38,31 @@ Installs quickly and easily using PIP:
             def __init__(self, email, password, roles=None):
                 UserMixin.__init__(self, roles)
 
-5. Put those decorators to work! Decorate any of your views with the `user_is` or `user_has` decorators from `flask.ext.permissions.decorators` to limit access.
+5. Add roles to your users and abilities to your roles. This can be done using convenience methods on the `UserMixin` and `Role` classes.
+
+    You'll need a role to start adding abilities.
+
+        my_role = Role('admin')
+
+    Add abilities by passing string ability names to `role.add_abilities()`. You may pass existing or new abilities in this way. New abilities will be created for you. Add the role to the session and commit when you're done.
+
+        my_role.add_abilities('create_users', 'delete_users', 'bring_about_world_peace')
+        db.session.add(my_role)
+        db.session.commit()
+
+    Add roles on a `UserMixin` instance or on an instance of your `UserMixin` sub-class.
+
+        my_user = UserMixin()
+
+    The `user.add_abilities()` method works just like `role.add_abilities()`. Pass in a string name or a series of string names. New roles will be created for you. Existing roles will simply be applied to the user. Don't forget to add and commit to the database!
+
+        my_user.add_roles('admin', 'superadmin')
+        db.session.add(my_user)
+        db.session.commit()
+
+    Similarly to the add methods, the classes also offer remove methods that work in the same way. Pass strings to `role.remove_abilities()` or `user.remove_roles()` to remove those attributes from the objects in question.
+
+6. Put those decorators to work! Decorate any of your views with the `user_is` or `user_has` decorators from `flask.ext.permissions.decorators` to limit access.
 
         from flask.ext.permissions.decorators import user_is, user_has
 
