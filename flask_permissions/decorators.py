@@ -31,8 +31,7 @@ def user_has(ability, user=None):
             if desired_ability in user_abilities:
                 return func(*args, **kwargs)
             else:
-                # Make this do someting way better.
-                return "You do not have access"
+                return "You do not have access", 403
         return inner
     return wrapper
 
@@ -53,7 +52,6 @@ def user_is(role, user=None):
                     return func(*args, **kwargs)
             except AttributeError:
                 pass
-            # Make this do someting way better.
-            return "You do not have access"
+            return "You do not have access", 403
         return inner
     return wrapper
