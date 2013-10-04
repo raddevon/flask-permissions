@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flask_permissions.core module &mdash; Flask-Permissions 0.1.21 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.21',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Flask-Permissions 0.1.21 documentation" href="index.html" />
+    <link rel="prev" title="Flask-Permissions documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Flask-Permissions documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Flask-Permissions 0.1.21 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-flask_permissions.core">
+<span id="flask-permissions-core-module"></span><h1>flask_permissions.core module<a class="headerlink" href="#module-flask_permissions.core" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="flask_permissions.core.Permissions">
+<em class="property">class </em><tt class="descclassname">flask_permissions.core.</tt><tt class="descname">Permissions</tt><big>(</big><em>app</em>, <em>local_db</em>, <em>current_user</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/core.html#Permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.core.Permissions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="flask_permissions.core.Permissions.init_app">
+<tt class="descname">init_app</tt><big>(</big><em>app</em>, <em>local_db</em>, <em>current_user</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/core.html#Permissions.init_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.core.Permissions.init_app" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-flask_permissions.decorators">
+<span id="flask-permissions-decorators-module"></span><h1>flask_permissions.decorators module<a class="headerlink" href="#module-flask_permissions.decorators" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="flask_permissions.decorators.user_has">
+<tt class="descclassname">flask_permissions.decorators.</tt><tt class="descname">user_has</tt><big>(</big><em>ability</em>, <em>user=None</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/decorators.html#user_has"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.decorators.user_has" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes an ability (a string name of either a role or an ability) and returns the function if the user has that ability</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flask_permissions.decorators.user_is">
+<tt class="descclassname">flask_permissions.decorators.</tt><tt class="descname">user_is</tt><big>(</big><em>role</em>, <em>user</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/decorators.html#user_is"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.decorators.user_is" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes an role (a string name of either a role or an ability) and returns the function if the user has that role</p>
+</dd></dl>
+
+</div>
+<div class="section" id="flask-permissions-models-module">
+<h1>flask_permissions.models module<a class="headerlink" href="#flask-permissions-models-module" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="flask-permissions-tests-module">
+<h1>flask_permissions.tests module<a class="headerlink" href="#flask-permissions-tests-module" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="module-flask_permissions.utils">
+<span id="flask-permissions-utils-module"></span><h1>flask_permissions.utils module<a class="headerlink" href="#module-flask_permissions.utils" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="flask_permissions.utils.is_sequence">
+<tt class="descclassname">flask_permissions.utils.</tt><tt class="descname">is_sequence</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/utils.html#is_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.utils.is_sequence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-flask_permissions">
+<span id="module-contents"></span><h1>Module contents<a class="headerlink" href="#module-flask_permissions" title="Permalink to this headline">¶</a></h1>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">flask_permissions.core module</a></li>
+<li><a class="reference internal" href="#module-flask_permissions.decorators">flask_permissions.decorators module</a></li>
+<li><a class="reference internal" href="#flask-permissions-models-module">flask_permissions.models module</a></li>
+<li><a class="reference internal" href="#flask-permissions-tests-module">flask_permissions.tests module</a></li>
+<li><a class="reference internal" href="#module-flask_permissions.utils">flask_permissions.utils module</a></li>
+<li><a class="reference internal" href="#module-flask_permissions">Module contents</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Flask-Permissions documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/API.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Flask-Permissions documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">Flask-Permissions 0.1.21 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Devon Campbell.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b2.
+    </div>
+  </body>
+</html>
