@@ -4,6 +4,7 @@ def is_sequence(arg):
 
     Args:
         arg: The variable to be tested.
+
     Returns:
         A boolean that is true if the variable is a sequence but not a string, false otherwise
     """

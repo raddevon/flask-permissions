@@ -23,6 +23,7 @@ def user_has(ability, user=None):
     Args:
         ability: The string name of the ability to test.
         user: (Optional) The user object to test for the given ability. If omitted, the function will attempt to import the Flask-Login current_user.
+
     Returns:
         The decorated function.
     """
@@ -55,6 +56,7 @@ def user_is(role, user=None):
         Args:
             role: The string name of the role to test.
             user: (Optional) The user object to test for the given role. If omitted, the function will attempt to import the Flask-Login current_user.
+
         Returns:
             The decorated function.
         """
