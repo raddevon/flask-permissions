@@ -54,6 +54,7 @@
 <dt id="flask_permissions.core.Permissions">
 <em class="property">class </em><tt class="descclassname">flask_permissions.core.</tt><tt class="descname">Permissions</tt><big>(</big><em>app</em>, <em>local_db</em>, <em>current_user</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/core.html#Permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.core.Permissions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Grabs data from the developer needed for the functionality of the Flask-Permissions extension</p>
 <dl class="method">
 <dt id="flask_permissions.core.Permissions.init_app">
 <tt class="descname">init_app</tt><big>(</big><em>app</em>, <em>local_db</em>, <em>current_user</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/core.html#Permissions.init_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.core.Permissions.init_app" title="Permalink to this definition">¶</a></dt>
@@ -65,30 +66,218 @@
 <div class="section" id="module-flask_permissions.decorators">
 <span id="flask-permissions-decorators-module"></span><h1>flask_permissions.decorators module<a class="headerlink" href="#module-flask_permissions.decorators" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
+<dt id="flask_permissions.decorators.import_user">
+<tt class="descclassname">flask_permissions.decorators.</tt><tt class="descname">import_user</tt><big>(</big><big>)</big><a class="headerlink" href="#flask_permissions.decorators.import_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to import the Flask-Login current_user proxy</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>The Flask-Login current_user proxy.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="flask_permissions.decorators.user_has">
 <tt class="descclassname">flask_permissions.decorators.</tt><tt class="descname">user_has</tt><big>(</big><em>ability</em>, <em>user=None</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/decorators.html#user_has"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.decorators.user_has" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes an ability (a string name of either a role or an ability) and returns the function if the user has that ability</p>
+<dd><p>Prevents access to a route unless the user has the given ability.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>ability: The string name of the ability to test.
+user: (Optional) The user object to test for the given ability. If omitted, the function will attempt to import the Flask-Login current_user.</dd>
+<dt>Returns:</dt>
+<dd>The decorated function.</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="flask_permissions.decorators.user_is">
-<tt class="descclassname">flask_permissions.decorators.</tt><tt class="descname">user_is</tt><big>(</big><em>role</em>, <em>user</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/decorators.html#user_is"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.decorators.user_is" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes an role (a string name of either a role or an ability) and returns the function if the user has that role</p>
+<tt class="descclassname">flask_permissions.decorators.</tt><tt class="descname">user_is</tt><big>(</big><em>role</em>, <em>user=None</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/decorators.html#user_is"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.decorators.user_is" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prevents access to a route unless the user has the given role.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>role: The string name of the role to test.
+user: (Optional) The user object to test for the given role. If omitted, the function will attempt to import the Flask-Login current_user.</dd>
+<dt>Returns:</dt>
+<dd>The decorated function.</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="flask-permissions-models-module">
 <h1>flask_permissions.models module<a class="headerlink" href="#flask-permissions-models-module" title="Permalink to this headline">¶</a></h1>
 </div>
-<div class="section" id="flask-permissions-tests-module">
-<h1>flask_permissions.tests module<a class="headerlink" href="#flask-permissions-tests-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-flask_permissions.tests">
+<span id="flask-permissions-tests-module"></span><h1>flask_permissions.tests module<a class="headerlink" href="#module-flask_permissions.tests" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="flask_permissions.tests.ModelsTests">
+<em class="property">class </em><tt class="descclassname">flask_permissions.tests.</tt><tt class="descname">ModelsTests</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">flask_testing.TestCase</span></tt></p>
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.create_app">
+<tt class="descname">create_app</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.create_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.create_app" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.tearDown">
+<tt class="descname">tearDown</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_ability">
+<tt class="descname">test_ability</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_ability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_ability" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_ability_repr">
+<tt class="descname">test_ability_repr</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_ability_repr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_ability_repr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_add_abilities_with_existing_abilities">
+<tt class="descname">test_add_abilities_with_existing_abilities</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_add_abilities_with_existing_abilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_add_abilities_with_existing_abilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_add_abilities_with_nonexisting_abilities">
+<tt class="descname">test_add_abilities_with_nonexisting_abilities</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_add_abilities_with_nonexisting_abilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_add_abilities_with_nonexisting_abilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_add_roles_with_existing_roles">
+<tt class="descname">test_add_roles_with_existing_roles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_add_roles_with_existing_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_add_roles_with_existing_roles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_add_roles_with_nonexisting_roles">
+<tt class="descname">test_add_roles_with_nonexisting_roles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_add_roles_with_nonexisting_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_add_roles_with_nonexisting_roles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_new_user_with_a_single_role_assigned">
+<tt class="descname">test_new_user_with_a_single_role_assigned</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_new_user_with_a_single_role_assigned"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_new_user_with_a_single_role_assigned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_new_user_with_roles_assigned">
+<tt class="descname">test_new_user_with_roles_assigned</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_new_user_with_roles_assigned"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_new_user_with_roles_assigned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_remove_abilities">
+<tt class="descname">test_remove_abilities</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_remove_abilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_remove_abilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_remove_roles">
+<tt class="descname">test_remove_roles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_remove_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_remove_roles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_role">
+<tt class="descname">test_role</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_role"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_role" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_role_repr">
+<tt class="descname">test_role_repr</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_role_repr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_role_repr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_role_str">
+<tt class="descname">test_role_str</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_role_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_role_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_user_get_id">
+<tt class="descname">test_user_get_id</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_user_get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_user_get_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_user_is_active">
+<tt class="descname">test_user_is_active</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_user_is_active"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_user_is_active" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_user_is_authenticated">
+<tt class="descname">test_user_is_authenticated</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_user_is_authenticated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_user_is_authenticated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_user_is_not_anonymous">
+<tt class="descname">test_user_is_not_anonymous</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_user_is_not_anonymous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_user_is_not_anonymous" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_user_mixin">
+<tt class="descname">test_user_mixin</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_user_mixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_user_mixin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.ModelsTests.test_user_repr">
+<tt class="descname">test_user_repr</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#ModelsTests.test_user_repr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.ModelsTests.test_user_repr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="flask_permissions.tests.UtilsTests">
+<em class="property">class </em><tt class="descclassname">flask_permissions.tests.</tt><tt class="descname">UtilsTests</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#UtilsTests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.UtilsTests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="flask_permissions.tests.UtilsTests.test_is_bool_a_sequence">
+<tt class="descname">test_is_bool_a_sequence</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#UtilsTests.test_is_bool_a_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.UtilsTests.test_is_bool_a_sequence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.UtilsTests.test_is_dict_a_sequence">
+<tt class="descname">test_is_dict_a_sequence</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#UtilsTests.test_is_dict_a_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.UtilsTests.test_is_dict_a_sequence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.UtilsTests.test_is_integer_a_sequence">
+<tt class="descname">test_is_integer_a_sequence</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#UtilsTests.test_is_integer_a_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.UtilsTests.test_is_integer_a_sequence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.UtilsTests.test_is_list_a_sequence">
+<tt class="descname">test_is_list_a_sequence</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#UtilsTests.test_is_list_a_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.UtilsTests.test_is_list_a_sequence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.UtilsTests.test_is_set_a_sequence">
+<tt class="descname">test_is_set_a_sequence</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#UtilsTests.test_is_set_a_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.UtilsTests.test_is_set_a_sequence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.UtilsTests.test_is_string_a_sequence">
+<tt class="descname">test_is_string_a_sequence</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#UtilsTests.test_is_string_a_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.UtilsTests.test_is_string_a_sequence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="flask_permissions.tests.UtilsTests.test_is_tuple_a_sequence">
+<tt class="descname">test_is_tuple_a_sequence</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/flask_permissions/tests.html#UtilsTests.test_is_tuple_a_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.tests.UtilsTests.test_is_tuple_a_sequence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-flask_permissions.utils">
 <span id="flask-permissions-utils-module"></span><h1>flask_permissions.utils module<a class="headerlink" href="#module-flask_permissions.utils" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="flask_permissions.utils.is_sequence">
 <tt class="descclassname">flask_permissions.utils.</tt><tt class="descname">is_sequence</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/flask_permissions/utils.html#is_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_permissions.utils.is_sequence" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Determines if the passed value is a sequence but not a string</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>arg: The variable to be tested.</dd>
+<dt>Returns:</dt>
+<dd>A boolean that is true if the variable is a sequence but not a string, false otherwise</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-flask_permissions">
@@ -106,7 +295,7 @@
 <li><a class="reference internal" href="#">flask_permissions.core module</a></li>
 <li><a class="reference internal" href="#module-flask_permissions.decorators">flask_permissions.decorators module</a></li>
 <li><a class="reference internal" href="#flask-permissions-models-module">flask_permissions.models module</a></li>
-<li><a class="reference internal" href="#flask-permissions-tests-module">flask_permissions.tests module</a></li>
+<li><a class="reference internal" href="#module-flask_permissions.tests">flask_permissions.tests module</a></li>
 <li><a class="reference internal" href="#module-flask_permissions.utils">flask_permissions.utils module</a></li>
 <li><a class="reference internal" href="#module-flask_permissions">Module contents</a></li>
 </ul>

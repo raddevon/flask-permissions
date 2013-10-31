@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flask_permissions.models &mdash; Flask-Permissions 0.1.21 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.21',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Flask-Permissions 0.1.21 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Flask-Permissions 0.1.21 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for flask_permissions.models</h1><div class="highlight"><pre>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+        <span class="s">&#39;Permissions app must be initialized before importing models&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">werkzeug</span> <span class="kn">import</span> <span class="n">generate_password_hash</span><span class="p">,</span> <span class="n">check_password_hash</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">is_sequence</span>
+
+
+<span class="n">user_role_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">&#39;fp_user_role&#39;</span><span class="p">,</span>
+                           <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+                               <span class="s">&#39;user_id&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;fp_user.id&#39;</span><span class="p">)),</span>
+                           <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+                           <span class="s">&#39;role_id&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;fp_role.id&#39;</span><span class="p">))</span>
+                           <span class="p">)</span>
+
+<span class="n">role_ability_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">&#39;fp_role_ability&#39;</span><span class="p">,</span>
+                              <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+                                  <span class="s">&#39;role_id&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;fp_role.id&#39;</span><span class="p">)),</span>
+                              <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+                              <span class="s">&#39;ability_id&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;fp_ability.id&#39;</span><span class="p">))</span>
+                              <span class="p">)</span>
+
+
+<div class="viewcode-block" id="Role"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.Role">[docs]</a><span class="k">class</span> <span class="nc">Role</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for user roles</span>
+
+<span class="sd">    This very basic roles class may be subclassed if you need it to store additional information.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: An integer primary key for database</span>
+<span class="sd">        name: A string naming the role</span>
+<span class="sd">        abilities: A relationship linking to the Ability object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;fp_role&#39;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">120</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">abilities</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s">&#39;Ability&#39;</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">role_ability_table</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s">&#39;roles&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Role.add_abilities"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.Role.add_abilities">[docs]</a>    <span class="k">def</span> <span class="nf">add_abilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">abilities</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds relationships to existing or new abilities to the Role object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *abilities: A variable number of string ability names to be associated with the Role object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ability</span> <span class="ow">in</span> <span class="n">abilities</span><span class="p">:</span>
+            <span class="n">existing_ability</span> <span class="o">=</span> <span class="n">Ability</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">ability</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">existing_ability</span><span class="p">:</span>
+                <span class="n">existing_ability</span> <span class="o">=</span> <span class="n">Ability</span><span class="p">(</span><span class="n">ability</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">existing_ability</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">abilities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">existing_ability</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Role.remove_abilities"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.Role.remove_abilities">[docs]</a>    <span class="k">def</span> <span class="nf">remove_abilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">abilities</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes relationships to abilities from the Role object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *abilities: A variable number of string ability names to be removed from the Role object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ability</span> <span class="ow">in</span> <span class="n">abilities</span><span class="p">:</span>
+            <span class="n">existing_ability</span> <span class="o">=</span> <span class="n">Ability</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">ability</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">existing_ability</span> <span class="ow">and</span> <span class="n">existing_ability</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">abilities</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">abilities</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">existing_ability</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&lt;Role {}&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+</div>
+<div class="viewcode-block" id="Ability"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.Ability">[docs]</a><span class="k">class</span> <span class="nc">Ability</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for role abilities</span>
+
+<span class="sd">    This very basic abilities class may be subclassed if you need it to store additional information.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: An integer primary key for database</span>
+<span class="sd">        name: A string naming the ability</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;fp_ability&#39;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">120</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&lt;Ability {}&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+</div>
+<div class="viewcode-block" id="UserMixin"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.UserMixin">[docs]</a><span class="k">class</span> <span class="nc">UserMixin</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin for the user class</span>
+
+<span class="sd">    Sub-class your user object from this class. You may want to add information the user will utilize to login such as a username, email address, and password.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: An integer primary key for database</span>
+<span class="sd">        roles: A relationship linking to the Ability object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;fp_user&#39;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">roles</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+        <span class="s">&#39;Role&#39;</span><span class="p">,</span> <span class="n">secondary</span><span class="o">=</span><span class="n">user_role_table</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s">&#39;users&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">default_role</span><span class="o">=</span><span class="s">&#39;user&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets up the new user with a defaul_role if specified or with the role &#39;user&#39; if not specified.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            roles: (Optional) A list of string role names to assign to the new user.</span>
+<span class="sd">            default_role: (Optional) Used primarily for sub-classes. This role is assigned to all new users with no roles specified. Default value: &#39;user&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># If only a string is passed for roles, convert it to a list containing</span>
+        <span class="c"># that string</span>
+        <span class="k">if</span> <span class="n">roles</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">roles</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">roles</span><span class="p">]</span>
+
+        <span class="c"># If a sequence is passed for roles (or if roles has been converted to</span>
+        <span class="c"># a sequence), fetch the corresponding database objects and make a list</span>
+        <span class="c"># of those.</span>
+        <span class="k">if</span> <span class="n">roles</span> <span class="ow">and</span> <span class="n">is_sequence</span><span class="p">(</span><span class="n">roles</span><span class="p">):</span>
+            <span class="n">role_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
+                <span class="n">role_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Role</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">role</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roles</span> <span class="o">=</span> <span class="n">role_list</span>
+        <span class="c"># Otherwise, assign the default &#39;user&#39; role. Create that role if it</span>
+        <span class="c"># doesn&#39;t exist.</span>
+        <span class="k">elif</span> <span class="n">default_role</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">Role</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">default_role</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="n">default_role</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roles</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="UserMixin.is_authenticated"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.UserMixin.is_authenticated">[docs]</a>    <span class="k">def</span> <span class="nf">is_authenticated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="UserMixin.is_active"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.UserMixin.is_active">[docs]</a>    <span class="k">def</span> <span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="UserMixin.is_anonymous"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.UserMixin.is_anonymous">[docs]</a>    <span class="k">def</span> <span class="nf">is_anonymous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="UserMixin.add_roles"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.UserMixin.add_roles">[docs]</a>    <span class="k">def</span> <span class="nf">add_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">roles</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds relationships to existing or new roles to the user object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *roles: A variable number of string role names to be associated with the user object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
+            <span class="n">existing_role</span> <span class="o">=</span> <span class="n">Role</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">role</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">existing_role</span><span class="p">:</span>
+                <span class="n">existing_role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">existing_role</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">existing_role</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="UserMixin.remove_roles"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.UserMixin.remove_roles">[docs]</a>    <span class="k">def</span> <span class="nf">remove_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">roles</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes relationships to roles from the user object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *roles: A variable number of string role names to be removed from the user object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
+            <span class="n">existing_role</span> <span class="o">=</span> <span class="n">Role</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">role</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">existing_role</span> <span class="ow">and</span> <span class="n">existing_role</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roles</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">existing_role</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="UserMixin.get_id"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.models.UserMixin.get_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&lt;User {}&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Flask-Permissions 0.1.21 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Devon Campbell.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b2.
+    </div>
+  </body>
+</html>

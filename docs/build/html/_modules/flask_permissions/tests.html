@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>flask_permissions.tests &mdash; Flask-Permissions 0.1.21 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.21',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Flask-Permissions 0.1.21 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Flask-Permissions 0.1.21 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for flask_permissions.tests</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">flask.ext.testing</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="nn">flask.ext.sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">Permissions</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">is_sequence</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;TESTING&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="n">db_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span> <span class="s">&#39;app.db&#39;</span><span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;SQLALCHEMY_DATABASE_URI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;sqlite:///&#39;</span> <span class="o">+</span> <span class="n">db_path</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">SQLAlchemy</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="n">perms</span> <span class="o">=</span> <span class="n">Permissions</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Role</span><span class="p">,</span> <span class="n">Ability</span><span class="p">,</span> <span class="n">UserMixin</span>
+
+
+<div class="viewcode-block" id="ModelsTests"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests">[docs]</a><span class="k">class</span> <span class="nc">ModelsTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ModelsTests.create_app"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.create_app">[docs]</a>    <span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">app</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.setUp"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">create_all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.tearDown"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_user_mixin"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_user_mixin">[docs]</a>    <span class="k">def</span> <span class="nf">test_user_mixin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">()</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_new_user_with_roles_assigned"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_new_user_with_roles_assigned">[docs]</a>    <span class="k">def</span> <span class="nf">test_new_user_with_roles_assigned</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;admin&#39;</span><span class="p">,</span> <span class="s">&#39;superadmin&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
+            <span class="n">new_role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_role</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">(</span><span class="n">roles</span><span class="o">=</span><span class="n">roles</span><span class="p">,</span> <span class="n">default_role</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_new_user_with_a_single_role_assigned"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_new_user_with_a_single_role_assigned">[docs]</a>    <span class="k">def</span> <span class="nf">test_new_user_with_a_single_role_assigned</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">new_role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_role</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">(</span><span class="n">roles</span><span class="o">=</span><span class="s">&#39;admin&#39;</span><span class="p">,</span> <span class="n">default_role</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_user_is_authenticated"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_user_is_authenticated">[docs]</a>    <span class="k">def</span> <span class="nf">test_user_is_authenticated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_user_is_active"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_user_is_active">[docs]</a>    <span class="k">def</span> <span class="nf">test_user_is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">is_active</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_user_is_not_anonymous"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_user_is_not_anonymous">[docs]</a>    <span class="k">def</span> <span class="nf">test_user_is_not_anonymous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">is_anonymous</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_user_get_id"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_user_get_id">[docs]</a>    <span class="k">def</span> <span class="nf">test_user_get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">()</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get_id</span><span class="p">(),</span> <span class="nb">unicode</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_user_repr"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_user_repr">[docs]</a>    <span class="k">def</span> <span class="nf">test_user_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">()</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">__repr__</span><span class="p">(),</span> <span class="s">&#39;&lt;User 1&gt;&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_role"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_role">[docs]</a>    <span class="k">def</span> <span class="nf">test_role</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">role</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_role_repr"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_role_repr">[docs]</a>    <span class="k">def</span> <span class="nf">test_role_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">role</span><span class="o">.</span><span class="n">__repr__</span><span class="p">(),</span> <span class="s">&#39;&lt;Role admin&gt;&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_role_str"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_role_str">[docs]</a>    <span class="k">def</span> <span class="nf">test_role_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">role</span><span class="o">.</span><span class="n">__str__</span><span class="p">(),</span> <span class="s">&#39;admin&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_ability"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_ability">[docs]</a>    <span class="k">def</span> <span class="nf">test_ability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ability</span> <span class="o">=</span> <span class="n">Ability</span><span class="p">(</span><span class="s">&#39;create_users&#39;</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ability</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">ability</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">test_ability_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ability</span> <span class="o">=</span> <span class="n">Ability</span><span class="p">(</span><span class="s">&#39;create_users&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">ability</span><span class="o">.</span><span class="n">__repr__</span><span class="p">(),</span> <span class="s">&#39;&lt;Ability create_users&gt;&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ModelsTests.test_ability_repr"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_ability_repr">[docs]</a>    <span class="k">def</span> <span class="nf">test_ability_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ability</span> <span class="o">=</span> <span class="n">Ability</span><span class="p">(</span><span class="s">&#39;create_users&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">ability</span><span class="o">.</span><span class="n">__str__</span><span class="p">(),</span> <span class="s">&#39;create_users&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_add_roles_with_nonexisting_roles"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_add_roles_with_nonexisting_roles">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_roles_with_nonexisting_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">(</span><span class="n">default_role</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">new_roles</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;admin&#39;</span><span class="p">,</span> <span class="s">&#39;superadmin&#39;</span><span class="p">,</span> <span class="s">&#39;editor&#39;</span><span class="p">]</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">add_roles</span><span class="p">(</span><span class="o">*</span><span class="n">new_roles</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">test_user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">role</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">test_user</span><span class="o">.</span><span class="n">roles</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">new_roles</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">roles</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_add_roles_with_existing_roles"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_add_roles_with_existing_roles">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_roles_with_existing_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">(</span><span class="n">default_role</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">new_roles</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;admin&#39;</span><span class="p">,</span> <span class="s">&#39;superadmin&#39;</span><span class="p">,</span> <span class="s">&#39;editor&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">new_roles</span><span class="p">:</span>
+            <span class="n">new_role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_role</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">add_roles</span><span class="p">(</span><span class="o">*</span><span class="n">new_roles</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">test_user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">role</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">test_user</span><span class="o">.</span><span class="n">roles</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">new_roles</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">roles</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_remove_roles"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_remove_roles">[docs]</a>    <span class="k">def</span> <span class="nf">test_remove_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="p">()</span>
+        <span class="n">new_roles</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;admin&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;superadmin&#39;</span><span class="p">]</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">add_roles</span><span class="p">(</span><span class="o">*</span><span class="n">new_roles</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">role_remove_user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">role_remove_user</span><span class="o">.</span><span class="n">remove_roles</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;admin&#39;</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">test_user</span> <span class="o">=</span> <span class="n">UserMixin</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">role</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">test_user</span><span class="o">.</span><span class="n">roles</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">roles</span><span class="p">),</span> <span class="nb">set</span><span class="p">([</span><span class="s">&#39;superadmin&#39;</span><span class="p">]))</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_add_abilities_with_nonexisting_abilities"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_add_abilities_with_nonexisting_abilities">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_abilities_with_nonexisting_abilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+        <span class="n">new_abilities</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create_users&#39;</span><span class="p">,</span> <span class="s">&#39;set_roles&#39;</span><span class="p">,</span> <span class="s">&#39;set_abilities&#39;</span><span class="p">]</span>
+        <span class="n">role</span><span class="o">.</span><span class="n">add_abilities</span><span class="p">(</span><span class="o">*</span><span class="n">new_abilities</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">test_role</span> <span class="o">=</span> <span class="n">Role</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">abilities</span> <span class="o">=</span> <span class="p">[</span><span class="n">ability</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ability</span> <span class="ow">in</span> <span class="n">test_role</span><span class="o">.</span><span class="n">abilities</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">new_abilities</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">abilities</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_add_abilities_with_existing_abilities"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_add_abilities_with_existing_abilities">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_abilities_with_existing_abilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+        <span class="n">new_abilities</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create_users&#39;</span><span class="p">,</span> <span class="s">&#39;set_roles&#39;</span><span class="p">,</span> <span class="s">&#39;set_abilities&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">ability</span> <span class="ow">in</span> <span class="n">new_abilities</span><span class="p">:</span>
+            <span class="n">new_ability</span> <span class="o">=</span> <span class="n">Ability</span><span class="p">(</span><span class="n">ability</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_ability</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">role</span><span class="o">.</span><span class="n">add_abilities</span><span class="p">(</span><span class="o">*</span><span class="n">new_abilities</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">test_role</span> <span class="o">=</span> <span class="n">Role</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">abilities</span> <span class="o">=</span> <span class="p">[</span><span class="n">ability</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ability</span> <span class="ow">in</span> <span class="n">test_role</span><span class="o">.</span><span class="n">abilities</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">new_abilities</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">abilities</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ModelsTests.test_remove_abilities"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.ModelsTests.test_remove_abilities">[docs]</a>    <span class="k">def</span> <span class="nf">test_remove_abilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">Role</span><span class="p">(</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+        <span class="n">new_abilities</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;create_users&#39;</span><span class="p">,</span> <span class="s">&#39;set_roles&#39;</span><span class="p">,</span> <span class="s">&#39;set_abilities&#39;</span><span class="p">]</span>
+        <span class="n">role</span><span class="o">.</span><span class="n">add_abilities</span><span class="p">(</span><span class="o">*</span><span class="n">new_abilities</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">ability_remove_role</span> <span class="o">=</span> <span class="n">Role</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ability_remove_role</span><span class="o">.</span><span class="n">remove_abilities</span><span class="p">(</span><span class="s">&#39;set_roles&#39;</span><span class="p">,</span> <span class="s">&#39;set_abilities&#39;</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ability_remove_role</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">test_role</span> <span class="o">=</span> <span class="n">Role</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">abilities</span> <span class="o">=</span> <span class="p">[</span><span class="n">ability</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ability</span> <span class="ow">in</span> <span class="n">test_role</span><span class="o">.</span><span class="n">abilities</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">abilities</span><span class="p">),</span> <span class="nb">set</span><span class="p">([</span><span class="s">&#39;create_users&#39;</span><span class="p">]))</span>
+
+</div></div>
+<div class="viewcode-block" id="UtilsTests"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.UtilsTests">[docs]</a><span class="k">class</span> <span class="nc">UtilsTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="UtilsTests.test_is_string_a_sequence"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.UtilsTests.test_is_string_a_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">test_is_string_a_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">string_var</span> <span class="o">=</span> <span class="s">&#39;This is a string. It is not a sequence.&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_sequence</span><span class="p">(</span><span class="n">string_var</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="UtilsTests.test_is_integer_a_sequence"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.UtilsTests.test_is_integer_a_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">test_is_integer_a_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">int_var</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_sequence</span><span class="p">(</span><span class="n">int_var</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="UtilsTests.test_is_bool_a_sequence"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.UtilsTests.test_is_bool_a_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">test_is_bool_a_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bool_var</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_sequence</span><span class="p">(</span><span class="n">bool_var</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="UtilsTests.test_is_list_a_sequence"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.UtilsTests.test_is_list_a_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">test_is_list_a_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">list_var</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_sequence</span><span class="p">(</span><span class="n">list_var</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="UtilsTests.test_is_set_a_sequence"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.UtilsTests.test_is_set_a_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">test_is_set_a_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">set_var</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_sequence</span><span class="p">(</span><span class="n">set_var</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="UtilsTests.test_is_tuple_a_sequence"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.UtilsTests.test_is_tuple_a_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">test_is_tuple_a_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tuple_var</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_sequence</span><span class="p">(</span><span class="n">tuple_var</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="UtilsTests.test_is_dict_a_sequence"><a class="viewcode-back" href="../../flask_permissions.html#flask_permissions.tests.UtilsTests.test_is_dict_a_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">test_is_dict_a_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dict_var</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_sequence</span><span class="p">(</span><span class="n">dict_var</span><span class="p">))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Flask-Permissions 0.1.21 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Devon Campbell.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b2.
+    </div>
+  </body>
+</html>
