@@ -10,7 +10,7 @@ def import_user():
             'User argument not passed and Flask-Login current_user could not be imported.')
 
 
-def user_has(ability, user=None):
+def user_has(ability, get_user=import_user:
     """
     Takes an ability (a string name of either a role or an ability) and returns the function if the user has that ability
     """
@@ -21,7 +21,7 @@ def user_has(ability, user=None):
             desired_ability = Ability.query.filter_by(
                 name=ability).first()
             user_abilities = []
-            current_user = user or import_user()
+            current_user = get_user()
             try:
                 for role in current_user.roles:
                     user_abilities += [
@@ -36,7 +36,7 @@ def user_has(ability, user=None):
     return wrapper
 
 
-def user_is(role, user=None):
+def user_is(role, get_user=import_user):
     """
     Takes an role (a string name of either a role or an ability) and returns the function if the user has that role
     """
@@ -46,7 +46,7 @@ def user_is(role, user=None):
             from .models import Role
             desired_role = Role.query.filter_by(
                 name=role).first()
-            current_user = user or import_user()
+            current_user = get_user()
             try:
                 if desired_role in current_user.roles:
                     return func(*args, **kwargs)
