@@ -10,7 +10,7 @@ def import_user():
             'User argument not passed and Flask-Login current_user could not be imported.')
 
 
-def user_has(ability, get_user=import_user:
+def user_has(ability, get_user=import_user):
     """
     Takes an ability (a string name of either a role or an ability) and returns the function if the user has that ability
     """
