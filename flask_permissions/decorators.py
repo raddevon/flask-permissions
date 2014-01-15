@@ -1,4 +1,5 @@
 from functools import wraps
+from werkzeug.exceptions import Forbidden
 
 
 def import_user():
@@ -31,7 +32,7 @@ def user_has(ability, get_user=import_user):
             if desired_ability in user_abilities:
                 return func(*args, **kwargs)
             else:
-                return "You do not have access", 403
+                raise Forbidden("You do not have access")
         return inner
     return wrapper
 
@@ -52,6 +53,6 @@ def user_is(role, get_user=import_user):
                     return func(*args, **kwargs)
             except AttributeError:
                 pass
-            return "You do not have access", 403
+            raise Forbidden("You do not have access")
         return inner
     return wrapper
