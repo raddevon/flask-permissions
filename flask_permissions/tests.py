@@ -1,6 +1,6 @@
 from flask import Flask
 import unittest
-from flask.ext.testing import TestCase
+from flask.ext.testing import TestCase as FlaskTestCase
 from flask.ext.sqlalchemy import SQLAlchemy
 from .core import Permissions
 from .utils import is_sequence
@@ -20,7 +20,7 @@ perms = Permissions(app, db, None)
 from .models import Role, Ability, UserMixin
 
 
-class ModelsTests(TestCase):
+class DatabaseTests(FlaskTestCase):
 
     def create_app(self):
         return app
@@ -30,6 +30,9 @@ class ModelsTests(TestCase):
 
     def tearDown(self):
         os.remove(db_path)
+
+
+class ModelsTests(DatabaseTests):
 
     def test_user_mixin(self):
         user = UserMixin()
