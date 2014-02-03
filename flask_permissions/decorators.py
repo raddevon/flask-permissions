@@ -23,12 +23,9 @@ def user_has(ability, get_user=import_user):
                 name=ability).first()
             user_abilities = []
             current_user = get_user()
-            try:
-                for role in current_user.roles:
-                    user_abilities += [
-                        role.ability for a in role.abilities]
-            except AttributeError:
-                pass
+            for role in current_user.roles:
+                user_abilities += role.abilities
+            print "Abilities: {}".format(user_abilities)
             if desired_ability in user_abilities:
                 return func(*args, **kwargs)
             else:
@@ -48,11 +45,8 @@ def user_is(role, get_user=import_user):
             desired_role = Role.query.filter_by(
                 name=role).first()
             current_user = get_user()
-            try:
-                if desired_role in current_user.roles:
-                    return func(*args, **kwargs)
-            except AttributeError:
-                pass
+            if desired_role in current_user.roles:
+                return func(*args, **kwargs)
             raise Forbidden("You do not have access")
         return inner
     return wrapper
