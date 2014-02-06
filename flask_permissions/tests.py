@@ -1,9 +1,11 @@
 from flask import Flask
 import unittest
-from flask.ext.testing import TestCase
+from flask.ext.testing import TestCase as FlaskTestCase
 from flask.ext.sqlalchemy import SQLAlchemy
 from .core import Permissions
 from .utils import is_sequence
+from .decorators import user_has, user_is
+from werkzeug.exceptions import Forbidden
 import os
 
 app = Flask(__name__)
@@ -20,7 +22,7 @@ perms = Permissions(app, db, None)
 from .models import Role, Ability, UserMixin
 
 
-class ModelsTests(TestCase):
+class DatabaseTests(FlaskTestCase):
 
     def create_app(self):
         return app
@@ -30,6 +32,9 @@ class ModelsTests(TestCase):
 
     def tearDown(self):
         os.remove(db_path)
+
+
+class ModelsTests(DatabaseTests):
 
     def test_user_mixin(self):
         user = UserMixin()
@@ -184,6 +189,55 @@ class ModelsTests(TestCase):
         test_role = Role.query.get(1)
         abilities = [ability.name for ability in test_role.abilities]
         self.assertEqual(set(abilities), set(['create_users']))
+
+
+class DecoratorsTests(DatabaseTests):
+
+    def mock_function(self):
+        return True
+
+    def create_user(self):
+        role = Role('admin')
+        new_abilities = ['create_users', 'set_roles', 'set_abilities']
+        for ability in new_abilities:
+            new_ability = Ability(ability)
+            db.session.add(new_ability)
+            db.session.commit()
+        role.add_abilities(*new_abilities)
+        db.session.add(role)
+        db.session.commit()
+
+        user = UserMixin(roles='admin')
+        db.session.add(user)
+        db.session.commit()
+
+    def return_user(self):
+        user = UserMixin.query.get(1)
+        return user
+
+    def setUp(self):
+        super(DecoratorsTests, self).setUp()
+        self.create_user()
+
+    def test_user_has_pass(self):
+        wrapped_function = user_has(
+            'create_users', self.return_user)(self.mock_function)
+        self.assertTrue(wrapped_function())
+
+    def test_user_has_fail(self):
+        wrapped_function = user_has(
+            'edit', self.return_user)(self.mock_function)
+        self.assertRaises(Forbidden, wrapped_function)
+
+    def test_user_is_pass(self):
+        wrapped_function = user_is(
+            'admin', self.return_user)(self.mock_function)
+        self.assertTrue(wrapped_function())
+
+    def test_user_is_fail(self):
+        wrapped_function = user_is(
+            'user', self.return_user)(self.mock_function)
+        self.assertRaises(Forbidden, wrapped_function)
 
 
 class UtilsTests(unittest.TestCase):
