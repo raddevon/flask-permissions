@@ -150,7 +150,7 @@ class ModelsTests(DatabaseTests):
         db.session.commit()
         test_user = UserMixin.query.get(1)
         roles = [role.name for role in test_user.roles]
-        self.assertEqual(set(roles), set(['superadmin']))
+        self.assertItemsEqual(roles, ['superadmin'])
 
     def test_add_abilities_with_nonexisting_abilities(self):
         role = Role('admin')
@@ -160,7 +160,7 @@ class ModelsTests(DatabaseTests):
         db.session.commit()
         test_role = Role.query.get(1)
         abilities = [ability.name for ability in test_role.abilities]
-        self.assertEqual(set(new_abilities), set(abilities))
+        self.assertItemsEqual(new_abilities, abilities)
 
     def test_add_abilities_with_existing_abilities(self):
         role = Role('admin')
@@ -174,7 +174,7 @@ class ModelsTests(DatabaseTests):
         db.session.commit()
         test_role = Role.query.get(1)
         abilities = [ability.name for ability in test_role.abilities]
-        self.assertEqual(set(new_abilities), set(abilities))
+        self.assertItemsEqual(new_abilities, abilities)
 
     def test_remove_abilities(self):
         role = Role('admin')
@@ -188,7 +188,7 @@ class ModelsTests(DatabaseTests):
         db.session.commit()
         test_role = Role.query.get(1)
         abilities = [ability.name for ability in test_role.abilities]
-        self.assertEqual(set(abilities), set(['create_users']))
+        self.assertItemsEqual(abilities, ['create_users'])
 
 
 class DecoratorsTests(DatabaseTests):
