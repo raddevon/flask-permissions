@@ -121,8 +121,7 @@ class ModelsTests(DatabaseTests):
         db.session.add(user)
         db.session.commit()
         test_user = UserMixin.query.get(1)
-        roles = [role.name for role in test_user.roles]
-        self.assertEqual(set(new_roles), set(roles))
+        self.assertItemsEqual(new_roles, test_user.roles)
 
     def test_add_roles_with_existing_roles(self):
         user = UserMixin(default_role=None)
@@ -135,8 +134,7 @@ class ModelsTests(DatabaseTests):
         db.session.add(user)
         db.session.commit()
         test_user = UserMixin.query.get(1)
-        roles = [role.name for role in test_user.roles]
-        self.assertEqual(set(new_roles), set(roles))
+        self.assertItemsEqual(new_roles, test_user.roles)
 
     def test_remove_roles(self):
         user = UserMixin()

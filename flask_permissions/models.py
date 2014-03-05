@@ -5,7 +5,16 @@ except ImportError:
         'Permissions app must be initialized before importing models')
 
 from werkzeug import generate_password_hash, check_password_hash
+from sqlalchemy.ext.associationproxy import association_proxy
 from .utils import is_sequence
+
+
+def _role_find_or_create(r):
+    role = Role.query.filter_by(name=r).first()
+    if not(role):
+        role = Role(name=r)
+        db.session.add(role)
+    return role
 
 
 user_role_table = db.Table('fp_user_role',
@@ -35,6 +44,8 @@ class Role(db.Model):
         'Ability', secondary=role_ability_table, backref='roles')
 
     def __init__(self, name):
+        print name
+        print type(name)
         self.name = name.lower()
 
     def add_abilities(self, *abilities):
@@ -86,8 +97,10 @@ class UserMixin(db.Model):
     """
     __tablename__ = 'fp_user'
     id = db.Column(db.Integer, primary_key=True)
-    roles = db.relationship(
+    _roles = db.relationship(
         'Role', secondary=user_role_table, backref='users')
+
+    roles = association_proxy('_roles', 'name', creator=_role_find_or_create)
 
     def __init__(self, roles=None, default_role='user'):
         # If only a string is passed for roles, convert it to a list containing
@@ -99,21 +112,11 @@ class UserMixin(db.Model):
         # a sequence), fetch the corresponding database objects and make a list
         # of those.
         if roles and is_sequence(roles):
-            role_list = []
-            for role in roles:
-                role_list.append(Role.query.filter_by(name=role).first())
-            self.roles = role_list
+            self.roles = roles
         # Otherwise, assign the default 'user' role. Create that role if it
         # doesn't exist.
         elif default_role:
-            r = Role.query.filter_by(name=default_role).first()
-            if not r:
-                r = Role(default_role)
-                db.session.add(r)
-                db.session.commit()
-            self.roles = [r]
-        else:
-            self.roles = []
+            self.roles = [default_role]
 
     def is_authenticated(self):
         return True
@@ -125,19 +128,10 @@ class UserMixin(db.Model):
         return False
 
     def add_roles(self, *roles):
-        for role in roles:
-            existing_role = Role.query.filter_by(name=role).first()
-            if not existing_role:
-                existing_role = Role(role)
-                db.session.add(existing_role)
-                db.session.commit()
-            self.roles.append(existing_role)
+        self.roles.extend(roles)
 
     def remove_roles(self, *roles):
-        for role in roles:
-            existing_role = Role.query.filter_by(name=role).first()
-            if existing_role and existing_role in self.roles:
-                self.roles.remove(existing_role)
+        self.roles = [role for role in self.roles if role not in roles]
 
     def get_id(self):
         return unicode(self.id)

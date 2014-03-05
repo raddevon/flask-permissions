@@ -23,7 +23,7 @@ def user_has(ability, get_user=import_user):
                 name=ability).first()
             user_abilities = []
             current_user = get_user()
-            for role in current_user.roles:
+            for role in current_user._roles:
                 user_abilities += role.abilities
             print "Abilities: {}".format(user_abilities)
             if desired_ability in user_abilities:
@@ -42,10 +42,8 @@ def user_is(role, get_user=import_user):
         @wraps(func)
         def inner(*args, **kwargs):
             from .models import Role
-            desired_role = Role.query.filter_by(
-                name=role).first()
             current_user = get_user()
-            if desired_role in current_user.roles:
+            if role in current_user.roles:
                 return func(*args, **kwargs)
             raise Forbidden("You do not have access")
         return inner
