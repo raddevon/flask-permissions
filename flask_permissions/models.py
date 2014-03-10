@@ -128,7 +128,7 @@ class UserMixin(db.Model):
         return False
 
     def add_roles(self, *roles):
-        self.roles.extend(roles)
+        self.roles.extend([role for role in roles if role not in self.roles])
 
     def remove_roles(self, *roles):
         self.roles = [role for role in self.roles if role not in roles]

@@ -147,8 +147,7 @@ class ModelsTests(DatabaseTests):
         db.session.add(user)
         db.session.commit()
         test_user = UserMixin.query.get(1)
-        roles = [role.name for role in test_user.roles]
-        self.assertItemsEqual(roles, ['superadmin'])
+        self.assertItemsEqual(test_user.roles, ['superadmin'])
 
     def test_add_abilities_with_nonexisting_abilities(self):
         role = Role('admin')
