@@ -99,6 +99,7 @@ class UserMixin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     _roles = db.relationship(
         'Role', secondary=user_role_table, backref='users')
+    type = Column(String(50))
 
     roles = association_proxy('_roles', 'name', creator=_role_find_or_create)
 
