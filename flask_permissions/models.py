@@ -102,6 +102,11 @@ class UserMixin(db.Model):
 
     roles = association_proxy('_roles', 'name', creator=_role_find_or_create)
 
+    __mapper_args__ = {
+        'polymorphic_identity': 'usermixin',
+        'polymorphic_on': type
+    }
+
     def __init__(self, roles=None, default_role='user'):
         # If only a string is passed for roles, convert it to a list containing
         # that string

@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='Flask-Permissions',
-    version='0.2.0',
+    version='0.2.1',
     url='https://github.com/raddevon/flask-permissions',
     license='MIT',
     author='Devon Campbell',
