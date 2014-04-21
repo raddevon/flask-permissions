@@ -44,8 +44,6 @@ class Role(db.Model):
         'Ability', secondary=role_ability_table, backref='roles')
 
     def __init__(self, name):
-        print name
-        print type(name)
         self.name = name.lower()
 
     def add_abilities(self, *abilities):

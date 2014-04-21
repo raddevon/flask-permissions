@@ -25,7 +25,6 @@ def user_has(ability, get_user=import_user):
             current_user = get_user()
             for role in current_user._roles:
                 user_abilities += role.abilities
-            print "Abilities: {}".format(user_abilities)
             if desired_ability in user_abilities:
                 return func(*args, **kwargs)
             else:
