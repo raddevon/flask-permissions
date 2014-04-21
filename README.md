@@ -35,6 +35,11 @@ Installs quickly and easily using PIP:
         class User(UserMixin):
             # Add whatever fields you need for your user class here.
 
+            # Identify the class to differentiate between sub-types of the UserMixin.
+            __mapper_args__ = {
+                'polymorphic_identity': 'user' # This can be any unique value except 'usermixin'.
+            }
+
             def __init__(self, email, password, roles=None):
                 UserMixin.__init__(self, roles)
 
