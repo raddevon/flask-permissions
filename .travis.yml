@@ -2,5 +2,5 @@ language: python
 python: "2.7"
 install:
     - pip install -r requirements.txt --allow-external twill --allow-unverified twill
-    - pip install coverage lxml requests
+    - pip install coverage nose
 script: nosetests --with-coverage --cover-package=flask_permissions
