@@ -59,7 +59,7 @@ Installs quickly and easily using PIP:
 
         my_user = UserMixin()
 
-    The `user.add_abilities()` method works just like `role.add_abilities()`. Pass in a string name or a series of string names. New roles will be created for you. Existing roles will simply be applied to the user. Don't forget to add and commit to the database!
+    The `user.add_roles()` method works just like `role.add_abilities()`. Pass in a string name or a series of string names. New roles will be created for you. Existing roles will simply be applied to the user. Don't forget to add and commit to the database!
 
         my_user.add_roles('admin', 'superadmin')
         db.session.add(my_user)
