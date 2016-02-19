@@ -5,6 +5,7 @@ except ImportError:
         'Permissions app must be initialized before importing models')
 
 from werkzeug import generate_password_hash, check_password_hash
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.associationproxy import association_proxy
 from .utils import is_sequence
 
@@ -19,7 +20,7 @@ def _role_find_or_create(r):
 
 user_role_table = db.Table('fp_user_role',
                            db.Column(
-                               'user_id', db.Integer, db.ForeignKey('fp_user.id')),
+                               'user_id', db.Integer, db.ForeignKey('users.id')),
                            db.Column(
                            'role_id', db.Integer, db.ForeignKey('fp_role.id'))
                            )
@@ -93,18 +94,15 @@ class UserMixin(db.Model):
     """
     Subclass this for your user class
     """
-    __tablename__ = 'fp_user'
-    id = db.Column(db.Integer, primary_key=True)
-    _roles = db.relationship(
-        'Role', secondary=user_role_table, backref='users')
-    type = db.Column(db.String(50))
+
+    __abstract__ = True
+
+    @declared_attr
+    def _roles(self):
+        return db.relationship(
+            'Role', secondary=user_role_table, backref='users')
 
     roles = association_proxy('_roles', 'name', creator=_role_find_or_create)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'usermixin',
-        'polymorphic_on': type
-    }
 
     def __init__(self, roles=None, default_role='user'):
         # If only a string is passed for roles, convert it to a list containing
