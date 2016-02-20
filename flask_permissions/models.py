@@ -1,3 +1,5 @@
+from sqlalchemy.ext.hybrid import hybrid_property
+
 try:
     from .core import db
 except ImportError:
@@ -18,12 +20,21 @@ def _role_find_or_create(r):
     return role
 
 
-user_role_table = db.Table('fp_user_role',
-                           db.Column(
-                               'user_id', db.Integer, db.ForeignKey('users.id')),
-                           db.Column(
-                           'role_id', db.Integer, db.ForeignKey('fp_role.id'))
-                           )
+def make_user_role_table(table_name='user', id_column_name='id'):
+    """
+        Create the user-role association table so that
+        it correctly references your own UserMixin subclass.
+
+    """
+
+    return db.Table('fp_user_role',
+                       db.Column(
+                           'user_id', db.Integer, db.ForeignKey('{}.{}'.format(
+                               table_name, id_column_name))),
+                       db.Column(
+                       'role_id', db.Integer, db.ForeignKey('fp_role.id')),
+                       extend_existing=True)
+
 
 role_ability_table = db.Table('fp_role_ability',
                               db.Column(
@@ -97,12 +108,21 @@ class UserMixin(db.Model):
 
     __abstract__ = True
 
+    @hybrid_property
+    def _id_column_name(self):
+        for k, v in self.__dict__.items():
+            if getattr(v, 'primary_key', False):
+                return k
+
     @declared_attr
     def _roles(self):
+        user_role_table = make_user_role_table(self.__tablename__, self._id_column_name)
         return db.relationship(
             'Role', secondary=user_role_table, backref='users')
 
-    roles = association_proxy('_roles', 'name', creator=_role_find_or_create)
+    @declared_attr
+    def roles(self):
+        return association_proxy('_roles', 'name', creator=_role_find_or_create)
 
     def __init__(self, roles=None, default_role='user'):
         # If only a string is passed for roles, convert it to a list containing
