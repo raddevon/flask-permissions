@@ -154,9 +154,3 @@ class UserMixin(db.Model):
 
     def remove_roles(self, *roles):
         self.roles = [role for role in self.roles if role not in roles]
-
-    def get_id(self):
-        return unicode(self.id)
-
-    def __repr__(self):
-        return '<User {}>'.format(self.id)
