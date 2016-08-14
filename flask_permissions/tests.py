@@ -1,7 +1,7 @@
 from flask import Flask
 import unittest
-from flask.ext.testing import TestCase as FlaskTestCase
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_testing import TestCase as FlaskTestCase
+from flask_sqlalchemy import SQLAlchemy
 from .core import Permissions
 from .utils import is_sequence
 from .decorators import user_has, user_is
