@@ -2,6 +2,7 @@ from flask import Flask
 import unittest
 from flask_testing import TestCase as FlaskTestCase
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer
 from .core import Permissions
 from .utils import is_sequence
 from .decorators import user_has, user_is
@@ -22,6 +23,10 @@ perms = Permissions(app, db, None)
 from .models import Role, Ability, UserMixin
 
 
+class User(UserMixin):
+    id = Column(Integer, primary_key=True)
+
+
 class DatabaseTests(FlaskTestCase):
 
     def create_app(self):
@@ -37,7 +42,7 @@ class DatabaseTests(FlaskTestCase):
 class ModelsTests(DatabaseTests):
 
     def test_user_mixin(self):
-        user = UserMixin()
+        user = User()
         db.session.add(user)
         db.session.commit()
         self.assertEqual(user.id, 1)
@@ -48,7 +53,7 @@ class ModelsTests(DatabaseTests):
             new_role = Role(role)
             db.session.add(new_role)
             db.session.commit()
-        user = UserMixin(roles=roles, default_role=None)
+        user = User(roles=roles, default_role=None)
         db.session.add(user)
         db.session.commit()
         self.assertEqual(user.id, 1)
@@ -57,31 +62,31 @@ class ModelsTests(DatabaseTests):
         new_role = Role('admin')
         db.session.add(new_role)
         db.session.commit()
-        user = UserMixin(roles='admin', default_role=None)
+        user = User(roles='admin', default_role=None)
         db.session.add(user)
         db.session.commit()
         self.assertEqual(user.id, 1)
 
     def test_user_is_authenticated(self):
-        user = UserMixin()
+        user = User()
         self.assertTrue(user.is_authenticated())
 
     def test_user_is_active(self):
-        user = UserMixin()
+        user = User()
         self.assertTrue(user.is_active())
 
     def test_user_is_not_anonymous(self):
-        user = UserMixin()
+        user = User()
         self.assertFalse(user.is_anonymous())
 
     def test_user_get_id(self):
-        user = UserMixin()
+        user = User()
         db.session.add(user)
         db.session.commit()
         self.assertEqual(user.get_id(), unicode(1))
 
     def test_user_repr(self):
-        user = UserMixin()
+        user = User()
         db.session.add(user)
         db.session.commit()
         self.assertEqual(user.__repr__(), '<User 1>')
@@ -115,16 +120,16 @@ class ModelsTests(DatabaseTests):
         self.assertEqual(ability.__str__(), 'create_users')
 
     def test_add_roles_with_nonexisting_roles(self):
-        user = UserMixin(default_role=None)
+        user = User(default_role=None)
         new_roles = ['admin', 'superadmin', 'editor']
         user.add_roles(*new_roles)
         db.session.add(user)
         db.session.commit()
-        test_user = UserMixin.query.get(1)
+        test_user = User.query.get(1)
         self.assertItemsEqual(new_roles, test_user.roles)
 
     def test_add_roles_with_existing_roles(self):
-        user = UserMixin(default_role=None)
+        user = User(default_role=None)
         new_roles = ['admin', 'superadmin', 'editor']
         for role in new_roles:
             new_role = Role(role)
@@ -133,20 +138,20 @@ class ModelsTests(DatabaseTests):
         user.add_roles(*new_roles)
         db.session.add(user)
         db.session.commit()
-        test_user = UserMixin.query.get(1)
+        test_user = User.query.get(1)
         self.assertItemsEqual(new_roles, test_user.roles)
 
     def test_remove_roles(self):
-        user = UserMixin()
+        user = User()
         new_roles = ['admin', 'user', 'superadmin']
         user.add_roles(*new_roles)
         db.session.add(user)
         db.session.commit()
-        role_remove_user = UserMixin.query.get(1)
+        role_remove_user = User.query.get(1)
         role_remove_user.remove_roles('user', 'admin')
         db.session.add(user)
         db.session.commit()
-        test_user = UserMixin.query.get(1)
+        test_user = User.query.get(1)
         self.assertItemsEqual(test_user.roles, ['superadmin'])
 
     def test_add_abilities_with_nonexisting_abilities(self):
@@ -204,12 +209,12 @@ class DecoratorsTests(DatabaseTests):
         db.session.add(role)
         db.session.commit()
 
-        user = UserMixin(roles='admin')
+        user = User(roles='admin')
         db.session.add(user)
         db.session.commit()
 
     def return_user(self):
-        user = UserMixin.query.get(1)
+        user = User.query.get(1)
         return user
 
     def setUp(self):
