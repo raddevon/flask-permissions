@@ -35,12 +35,8 @@ Installs quickly and easily using PIP:
         class User(UserMixin):
             # Add whatever fields you need for your user class here.
 
-            # Identify the class to differentiate between sub-types of the UserMixin.
-            __mapper_args__ = {
-                'polymorphic_identity': 'user' # This can be any unique value except 'usermixin'.
-            }
-
-            def __init__(self, email, password, roles=None):
+            def __init__(self, ...):
+                # Do your user init
                 UserMixin.__init__(self, roles)
 
 5. Add roles to your users and abilities to your roles. This can be done using convenience methods on the `UserMixin` and `Role` classes.
@@ -55,9 +51,9 @@ Installs quickly and easily using PIP:
         db.session.add(my_role)
         db.session.commit()
 
-    Add roles on a `UserMixin` instance or on an instance of your `UserMixin` sub-class.
+    Add roles on an instance of your `UserMixin` sub-class.
 
-        my_user = UserMixin()
+        my_user = User()
 
     The `user.add_roles()` method works just like `role.add_abilities()`. Pass in a string name or a series of string names. New roles will be created for you. Existing roles will simply be applied to the user. Don't forget to add and commit to the database!
 

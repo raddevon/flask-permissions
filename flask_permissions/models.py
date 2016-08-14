@@ -1,3 +1,4 @@
+
 try:
     from .core import db
 except ImportError:
@@ -5,6 +6,8 @@ except ImportError:
         'Permissions app must be initialized before importing models')
 
 from werkzeug import generate_password_hash, check_password_hash
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.associationproxy import association_proxy
 from .utils import is_sequence
 
@@ -17,12 +20,21 @@ def _role_find_or_create(r):
     return role
 
 
-user_role_table = db.Table('fp_user_role',
-                           db.Column(
-                               'user_id', db.Integer, db.ForeignKey('fp_user.id')),
-                           db.Column(
-                           'role_id', db.Integer, db.ForeignKey('fp_role.id'))
-                           )
+def make_user_role_table(table_name='user', id_column_name='id'):
+    """
+        Create the user-role association table so that
+        it correctly references your own UserMixin subclass.
+
+    """
+
+    return db.Table('fp_user_role',
+                       db.Column(
+                           'user_id', db.Integer, db.ForeignKey('{}.{}'.format(
+                               table_name, id_column_name))),
+                       db.Column(
+                       'role_id', db.Integer, db.ForeignKey('fp_role.id')),
+                       extend_existing=True)
+
 
 role_ability_table = db.Table('fp_role_ability',
                               db.Column(
@@ -93,18 +105,35 @@ class UserMixin(db.Model):
     """
     Subclass this for your user class
     """
-    __tablename__ = 'fp_user'
-    id = db.Column(db.Integer, primary_key=True)
-    _roles = db.relationship(
-        'Role', secondary=user_role_table, backref='users')
-    type = db.Column(db.String(50))
 
-    roles = association_proxy('_roles', 'name', creator=_role_find_or_create)
+    __abstract__ = True
 
-    __mapper_args__ = {
-        'polymorphic_identity': 'usermixin',
-        'polymorphic_on': type
-    }
+    @hybrid_property
+    def _id_column_name(self):
+
+        # the list of the class's columns (with attributes like
+        # 'primary_key', etc.) is accessible in different places
+        # before and after table definition.
+        if self.__tablename__ in self.metadata.tables.keys():
+            # after definition, it's here
+            columns = self.metadata.tables[self.__tablename__]._columns
+        else:
+            # before, it's here
+            columns = self.__dict__
+
+        for k, v in columns.items():
+            if getattr(v, 'primary_key', False):
+                return k
+
+    @declared_attr
+    def _roles(self):
+        user_role_table = make_user_role_table(self.__tablename__, self._id_column_name)
+        return db.relationship(
+            'Role', secondary=user_role_table, backref='users')
+
+    @declared_attr
+    def roles(self):
+        return association_proxy('_roles', 'name', creator=_role_find_or_create)
 
     def __init__(self, roles=None, default_role='user'):
         # If only a string is passed for roles, convert it to a list containing
@@ -138,7 +167,7 @@ class UserMixin(db.Model):
         self.roles = [role for role in self.roles if role not in roles]
 
     def get_id(self):
-        return unicode(self.id)
+        return unicode(getattr(self, self._id_column_name))
 
     def __repr__(self):
-        return '<User {}>'.format(self.id)
+        return '<{} {}>'.format(self.__tablename__.capitalize(), self.get_id())
