@@ -114,14 +114,14 @@ class UserMixin(db.Model):
         # the list of the class's columns (with attributes like
         # 'primary_key', etc.) is accessible in different places
         # before and after table definition.
-        if self.__tablename__ in self.metadata.tables.keys():
+        if self.__tablename__ in list(self.metadata.tables.keys()):
             # after definition, it's here
             columns = self.metadata.tables[self.__tablename__]._columns
         else:
             # before, it's here
             columns = self.__dict__
 
-        for k, v in columns.items():
+        for k, v in list(columns.items()):
             if getattr(v, 'primary_key', False):
                 return k
 
@@ -139,7 +139,7 @@ class UserMixin(db.Model):
     def __init__(self, roles=None, default_role='user'):
         # If only a string is passed for roles, convert it to a list containing
         # that string
-        if roles and isinstance(roles, basestring):
+        if roles and isinstance(roles, str):
             roles = [roles]
 
         # If a sequence is passed for roles (or if roles has been converted to
@@ -168,7 +168,7 @@ class UserMixin(db.Model):
         self.roles = [role for role in self.roles if role not in roles]
 
     def get_id(self):
-        return unicode(getattr(self, self._id_column_name))
+        return str(getattr(self, self._id_column_name))
 
     def __repr__(self):
         return '<{} {}>'.format(self.__tablename__.capitalize(), self.get_id())

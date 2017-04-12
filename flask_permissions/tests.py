@@ -15,6 +15,7 @@ app.config['TESTING'] = True
 db_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'app.db')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
@@ -83,7 +84,7 @@ class ModelsTests(DatabaseTests):
         user = User()
         db.session.add(user)
         db.session.commit()
-        self.assertEqual(user.get_id(), unicode(1))
+        self.assertEqual(user.get_id(), str(1))
 
     def test_user_repr(self):
         user = User()
