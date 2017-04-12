@@ -127,7 +127,8 @@ class UserMixin(db.Model):
 
     @declared_attr
     def _roles(self):
-        user_role_table = make_user_role_table(self.__tablename__, self._id_column_name)
+        user_role_table = make_user_role_table(self.__tablename__,
+                                               self._id_column_name.fget(self))
         return db.relationship(
             'Role', secondary=user_role_table, backref='users')
 
