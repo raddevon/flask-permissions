@@ -127,7 +127,8 @@ class ModelsTests(DatabaseTests):
         db.session.add(user)
         db.session.commit()
         test_user = User.query.get(1)
-        self.assertItemsEqual(new_roles, test_user.roles)
+        # self.assertItemsEqual(new_roles, test_user.roles)
+        self.assertEqual(sorted(new_roles), sorted(test_user.roles))
 
     def test_add_roles_with_existing_roles(self):
         user = User(default_role=None)
@@ -140,7 +141,8 @@ class ModelsTests(DatabaseTests):
         db.session.add(user)
         db.session.commit()
         test_user = User.query.get(1)
-        self.assertItemsEqual(new_roles, test_user.roles)
+        # self.assertItemsEqual(new_roles, test_user.roles)
+        self.assertEqual(sorted(new_roles), sorted(test_user.roles))
 
     def test_remove_roles(self):
         user = User()
@@ -153,7 +155,8 @@ class ModelsTests(DatabaseTests):
         db.session.add(user)
         db.session.commit()
         test_user = User.query.get(1)
-        self.assertItemsEqual(test_user.roles, ['superadmin'])
+        # self.assertItemsEqual(test_user.roles, ['superadmin'])
+        self.assertEqual(sorted(test_user.roles), sorted(['superadmin']))
 
     def test_add_abilities_with_nonexisting_abilities(self):
         role = Role('admin')
@@ -163,7 +166,8 @@ class ModelsTests(DatabaseTests):
         db.session.commit()
         test_role = Role.query.get(1)
         abilities = [ability.name for ability in test_role.abilities]
-        self.assertItemsEqual(new_abilities, abilities)
+        # self.assertItemsEqual(new_abilities, abilities)
+        self.assertEqual(sorted(new_abilities), sorted(abilities))
 
     def test_add_abilities_with_existing_abilities(self):
         role = Role('admin')
@@ -177,7 +181,8 @@ class ModelsTests(DatabaseTests):
         db.session.commit()
         test_role = Role.query.get(1)
         abilities = [ability.name for ability in test_role.abilities]
-        self.assertItemsEqual(new_abilities, abilities)
+        # self.assertItemsEqual(new_abilities, abilities)
+        self.assertEqual(sorted(new_abilities), sorted(abilities))
 
     def test_remove_abilities(self):
         role = Role('admin')
@@ -191,7 +196,8 @@ class ModelsTests(DatabaseTests):
         db.session.commit()
         test_role = Role.query.get(1)
         abilities = [ability.name for ability in test_role.abilities]
-        self.assertItemsEqual(abilities, ['create_users'])
+        # self.assertItemsEqual(abilities, ['create_users'])
+        self.assertEqual(sorted(abilities), sorted(['create_users']))
 
 
 class DecoratorsTests(DatabaseTests):
@@ -272,3 +278,7 @@ class UtilsTests(unittest.TestCase):
     def test_is_dict_a_sequence(self):
         dict_var = {'a': 1, 'b': 2, 'c': 3}
         self.assertTrue(is_sequence(dict_var))
+
+
+if __name__ == '__main__':  # optional, but makes import and reuse easier
+    unittest.main()
