@@ -1,4 +1,4 @@
 def is_sequence(arg):
-    return (not hasattr(arg, "strip") and
-            hasattr(arg, "__getitem__") or
-            hasattr(arg, "__iter__"))
+    if hasattr(arg, "strip"):
+        return False
+    return (hasattr(arg, "__getitem__") or hasattr(arg, "__iter__"))
