@@ -1,13 +1,9 @@
-appdirs==1.4.3
 click==6.7
 Flask==0.12.1
 Flask-SQLAlchemy==2.2
-Flask-Testing==0.6.2
 itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
-packaging==16.8
-pyparsing==2.2.0
-six==1.10.0
 SQLAlchemy==1.1.9
 Werkzeug==0.12.1
+

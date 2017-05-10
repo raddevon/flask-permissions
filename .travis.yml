@@ -4,5 +4,5 @@ python:
     - "3.5"
 install:
     - pip install -r requirements.txt
-    - pip install nose coverage
+    - pip install nose coverage flask_testing
 script: nosetests --with-coverage --cover-package=flask_permissions
