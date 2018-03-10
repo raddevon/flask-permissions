@@ -172,5 +172,3 @@ This extension is available under the MIT license. See the LICENSE file for more
 ## Thank You
 
 I hope you enjoy this project. I built Flask-Permissions because I couldn't find a simple permissions system for Flask. This does everything I need, and I feel the implementation is very easy to understand.
-
-I'd love to hear your comments either on Twitter ([@raddevon](http://twitter.com/raddevon/)) or via email ([devon@raddevon.com](mailto:devon@raddevon.com)). I welcome pull requests, but I'm just one guy (and still a relatively new coder) so please try to be patient with me. If this project helps you, consider leaving me a [gittip](https://www.gittip.com/raddevon/).
