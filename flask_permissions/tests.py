@@ -116,7 +116,7 @@ class ModelsTests(DatabaseTests):
         ability = Ability('create_users')
         self.assertEqual(ability.__repr__(), '<Ability create_users>')
 
-    def test_ability_repr(self):
+    def test_ability_str(self):
         ability = Ability('create_users')
         self.assertEqual(ability.__str__(), 'create_users')
 
